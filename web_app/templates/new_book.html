@@ -1,15 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Book Form</title>
-</head>
-<body>
+{% extends "layout.html" %}
 
-    <h1>New Book Form</h1>
-
-    <a href="/books">Books Page</a>
+{% block content %}
+    <h2>New Book Form</h2>
     
     <p>Hello, use the form below to create a new book...</p>
     
@@ -27,5 +19,5 @@
 
         <button>Submit</button>
     </form>
-</body>
-</html>
+
+    {% endblock %}
