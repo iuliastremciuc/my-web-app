@@ -1,11 +1,11 @@
 # web_app/routes/home_routes.py
 from flask import Blueprint, jsonify, render_template, request, redirect
 
-from web_app.models import db, Book#, parse_records
+from web_app.models import db, Book, parse_records
 
 book_routes = Blueprint("book_routes", __name__)
 
-@book_routes.route("/book.json")
+@book_routes.route("/books.json")
 def list_books():
     print("REQUESTED THE BOOKS IN JSON FORMAT")
     # books = [
@@ -14,7 +14,8 @@ def list_books():
     #     {"id": 3, "title": "Book 3"},
     # ]
     book_records = Book.query.all()
-    return jsonify(book_records)
+    books = parse_records(book_records)
+    return jsonify(books)
 
 @book_routes.route("/books")
 def books():

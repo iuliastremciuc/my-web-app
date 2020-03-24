@@ -1,3 +1,4 @@
 #ignore 
 *.db
 *.sqlite3
+.env
