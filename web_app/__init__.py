@@ -1,5 +1,4 @@
 
-
 # web_app/__init__.py
 
 from flask import Flask
@@ -7,17 +6,19 @@ from flask import Flask
 from web_app.models import db, migrate
 from web_app.routes.home_routes import home_routes
 from web_app.routes.book_routes import book_routes
+from web_app.routes.twitter_routes import twitter_routes
 
 def create_app():
     app = Flask(__name__)
 
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///web_app.db"
-    #app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////C:/Users/iulia/Desktop/web_app.db"
+    #app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///Users/iulia/Desktop/my-web-app/web_app.db"
     db.init_app(app)
     migrate.init_app(app, db)
 
     app.register_blueprint(home_routes)
     app.register_blueprint(book_routes)
+    app.register_blueprint(twitter_routes)
 
     return app
 
