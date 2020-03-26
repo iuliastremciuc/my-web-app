@@ -1,7 +1,7 @@
 
 # web_app/routes/twitter_routes.py
 
-from flask import Blueprint, render_template, jsonify
+from flask import Blueprint, render_template, jsonify #, request
 
 from web_app.models import db, User, Tweet, parse_records
 from web_app.services.twitter_service import twitter_api_client
@@ -9,13 +9,11 @@ from web_app.services.basilica_service import basilica_api_client
 
 twitter_routes = Blueprint("twitter_routes", __name__)
 
-@twitter_routes.route("/users/<screen_name>")
-def get_user(screen_name=None):
-    print(screen_name)
-
+def store_twitter_user_data(screen_name):
     api = twitter_api_client()
     twitter_user = api.get_user(screen_name)
-    statuses = api.user_timeline(screen_name, tweet_mode="extended", count=150, exclude_replies=True, include_rts=False)
+    #statuses = api.user_timeline(screen_name, tweet_mode="extended", count=150, exclude_replies=True, include_rts=False)
+    statuses = api.user_timeline(screen_name, tweet_mode="extended", count=50)
     #return jsonify({"user": user._json, "tweets": [s._json for s in statuses]})
 
     db_user = User.query.get(twitter_user.id) or User(id=twitter_user.id)
@@ -53,8 +51,23 @@ def get_user(screen_name=None):
         counter+=1
     db.session.commit()
 
+    return db_user, statuses
 
+@twitter_routes.route("/users")
+@twitter_routes.route("/users.json")
+def list_users():
+    #if request.path.endswith(".json"):
+    #    return some json
+    #else:
+    #    render a template
+    db_users = User.query.all()
+    users = parse_records(db_users)
+    return jsonify(users)
+
+@twitter_routes.route("/users/<screen_name>")
+def get_user(screen_name=None):
+    print(screen_name)
+    db_user, statuses = store_twitter_user_data(screen_name)
     #breakpoint()
-    return "OK"
-
-    #return render_template("user.html", user=db_user, tweets=statuses) # tweets=db_tweets
+    #return "OK"
+    return render_template("user.html", user=db_user, tweets=statuses) # tweets=db_tweets
